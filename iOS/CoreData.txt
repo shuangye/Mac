@@ -1,0 +1,21 @@
+Q: 怎样存储带格式的文本和图文混排（可考虑微软 Office Open XML 格式）？
+
+Core Data Programming Guide
+通常使用 Xcode Data Model Design 工具以图形化方式创建 managed object model, 也可在运行时以编程方式动态地创建。
+Managed Objects 用 NSManagedObject 或其子类表示。该类可表示任何实体，它使用一个私有的内部 store 来维护其属性和 managed object 所需的基本行为。可创建 NSManagedObject 的子类来实现额外的一些行为。
+A managed object has a reference to the entity description for the entity of which it is an instance. It refers to the entity description to discover metadata about itself, including the name of the entity it represents and information about its attributes and relationships. 
+
+[H2] Managed Object Model, NSManagedObjectModel
+[H3] Entities
+一个 model 包含若干个 NSEntityDescription 对象，后者表示前者的实体 (entities). 实体的两个重要 features 是实体的名字、以及运行时用以表示该实体的类。Managed objects 是实体的实例。
+
+Performance
+SQLite 可存储数以T计的数据。只要 attribute 不是非常大，则一万条记录是很小的。
+尽量把 fetch request 合并而不是分多次执行。将位于内存中的 managed object 数量最小化。
+
+Data Format
+Core Data 支持二进制存储格式。
+The rule for storing binary data:
+<100KB store in the same table as the relevant data
+<1MB store in a separate table attached via a relationship to avoid loading unnecessarily
+>1MB store on disk and reference it inside of Core Data

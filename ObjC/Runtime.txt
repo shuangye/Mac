@@ -1,0 +1,6 @@
+有两个版本的 Objective-C Runtime: modern (Objective-C 2.0) 和 legacy (Objective-C 1). 二者的最大不同是，前者的实例变量是 non-fragile 的：在 legacy runtime 中，更改类的实例变量布局 (layout) 后，必须重新编译该类的子类，而在 modern runtime 中则不必重新编译。此外，the modern runtime supports instance variable synthesis for declared properties.
+
+Interacting with the Runtime
+Objective-C 程序在 3 个不同的 levels 上与 runtime 系统交互：Objective-C 源代码、NSObject 定义的方法、直接调用 runtime 函数。
+
+Ref: Objective-C Runtime Programming Guide, Objective-C Runtime Reference.

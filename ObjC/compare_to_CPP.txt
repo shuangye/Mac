@@ -1,0 +1,14 @@
+Objective-C vs. C++
+混合了 C++ 和 Objective-C 的源文件后缀名为 .mm, 这样可使编译识别其中的 C++ 代码。
+C++ 与 Objective-C 的主要不同在于 the approach to the object oriented features. C++ 中的许多行为都是在编译时发生的，而 Objective-C 中的行为则多在运行时发生。你可以用 method swizzling 一窥 Objective-C runtime, 而对于 C++ 则是不可能的。C++ 对 introspection 和 reflection 的支持也不如 Objective-C. C++ 不能像 Objective-C 的 "class" 实例方法一样获得某个对象是什么类，也没有与 isMemberOfClass 或 isKindOfClass 等价的方法。
+Objective-C 中的类一般都继承自 NSObject; C++ 中的类没有父类是很常见的。
+二者的类可以互相引用，但不能相互继承。如 C++ 的类作为 Objective-C 的属性类型，但不能使用 (strong), (weak), 因为这对非 Objective-C 对象是没有意义的，编译器不能 retain 或 release 非 Objective-C 对象。
+二者的异常也可以共存，但要格外小心。请参阅其他文档。
+在 Objective-C 中不能限制一个方法的作用域，即使你不把它放在类的公开接口中，从技术上讲，也仍可在外部调用它。Objective-C 中方法的私有或公开仅仅是一个惯例，因此许多开发者为私有方法名加一个前缀。
+堆内存：跨函数作用域存在。C++ 中可把对象创建在栈上，而 Objective-C 中，对象只能创建在堆上，如 NSString stackString 就会导致编译错误。
+C++ 中的 new MyClass; 类似于 Objective-C 中的 [[MyClass alloc] init]; 但没有与 delete 对应的东西，因为 Objective-C 使用 ARC.
+C++ 允许多继承，且可指定是 public 还是 private 继承；而 Objective-C 只允许单一继承，不过可通过协议补充一下。一般认为多继承是应极力避免的，除非非用不可。若两个父类有相同签名的方法 foo, 则实例需要用 instance.base1::foo(); 这样的调用才能避免混淆。而通过协议间接达到的“多继承”，把对方法的实现留给了子类，这样即使有同名方法，在子类中也只会有一个实现。
+C++ 让程序员决定使用静态绑定还是动态绑定，而 Objective-C 中则只能使用动态绑定。
+init 之类的方法类似于构造函数; dealloc 类似于析构函数。
+C++ 中不管对象分配在栈上还是堆上，构造时都是从父类到子类依次调用 constructor; 析构时从子类到父类依次调用 destructor. 分配在栈上时，对象离开作用域时才会调用 destructor; 分配在堆上时，仅在显式地 delete 指针时，才会调用 destructor.
+C++ 支持运算符重载而 Objective-C 不支持（C 也不支持）。
