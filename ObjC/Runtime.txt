@@ -3,4 +3,14 @@
 Interacting with the Runtime
 Objective-C 程序在 3 个不同的 levels 上与 runtime 系统交互：Objective-C 源代码、NSObject 定义的方法、直接调用 runtime 函数。
 
+Messaging
+编译器把消息表达式 [receiver message] 转换成 objc_msgSend(receiver, selector, arg1, arg2, ...) 函数调用。
+编译器为每个类和实例都构造了一个 class structure, 后者包含两个核心元素：
+*) 一个指向父类的指针 self.superclass
+*) A class dispatch table. It has entries that associate method selectors with the class-specific addresses of the methods they identify. (The implementation address of a method selector.)
+对象被创建时，它会得到内存，其实例变量也会被初始化，其中就包含一个指向其 class structure 的指针 isa. 通过该指针可访问该对象所属的类、及所继承的类。
+消息被发送给对象时，objc_msgSend() 函数会跟随该对象的 isa 指针到达其 class structure, 在其中的 dispatch table 中查找 method selector. 若未找到，则顺着 self.superclass 指针在父类中找，一直到 NSObject; 若找到则调用。动态绑定就是这样实现的。
+为了加速消息的处理，runtime system 使用了 cache 机制，缓存 method selector 到 method address. 每个类都有一个独立的 cache, 其中既可包含本类中定义的方法，亦可包含父类中的方法。Cache 是动态调整的。
+
+
 Ref: Objective-C Runtime Programming Guide, Objective-C Runtime Reference.
