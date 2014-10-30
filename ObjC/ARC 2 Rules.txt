@@ -1,0 +1,6 @@
+﻿ARC 仍是基于 reference counting 的，只不过是使该机制自动化了。
+启用 ARC 后，不用再自己调用 retain/release, 内存管理的问题就交给编译器了。clang (LLVM) 3.0 或更新，-fobjc-arc 编译选项。
+Reference counting 的规则仍适用于 ARC, 但引用了一些 ownership qualifiers.
+id 用于隐藏对象的类名，就像 C 里的 void*. 使用 ARC, 每个 id 类型或对象类型的变量都要有 4 个 ownership qualifiers 之一：__strong, __weak, __unsafe_unretained, __autoreleasing.
+iOS 5+ 及 OS X 10.7+ 请使用 __weak, 较早版本请用 __unsafe_unretained. 二者的不同是，__unsafe_unretained 所指的对象释放时，它修饰的指针不会被自动置为 nil, 因而成为悬垂指针。
+When a variable with a __weak qualifier is used, the object is always registered in autoreleasepool.

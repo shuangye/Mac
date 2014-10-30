@@ -1,19 +1,19 @@
-Pro Multithreading and Memory Management for iOS and OS X
+ï»¿Pro Multithreading and Memory Management for iOS and OS X
 
 Chapter 1 - Life Before ARC
-¹æÔò£º
+è§„åˆ™ï¼š
 *) You have ownership of any objects you create. +alloc/+new/-copy/-mutableCopy group
 *) You can take ownership of an object using retain. -retain
 *) When no longer needed, you must relinquish ownership of an object you own. -release
 *) You must not relinquish ownership of an object you don't own, or the app will crash.
-ÈôÔÚ·½·¨ÄÚ´´½¨ÁË¶ÔÏó£¬Ôò¸Ã·½·¨ÓµÓĞ¸Ã¶ÔÏóµÄËùÓĞÈ¨£»Èô¸Ã·½·¨°ÑËüÓµÓĞËùÓĞÈ¨µÄ¶ÔÏó·µ»Ø¸øµ÷ÓÃÕß£¬ÔòËùÓĞÈ¨¾Í´«µİ¸øÁËµ÷ÓÃÕß¡£°´ÕÕ¹ßÀı£¬¸Ã·½·¨ÃûÓ¦ÒÔ alloc ¿ªÍ·¡£
-·½·¨Ò²¿ÉÒÔ·µ»ØÃ»ÓĞËùÓĞÈ¨µÄ¶ÔÏó£¬ÕâÑùµÄ·½·¨²»ÄÜÒÔ alloc/new/copy/mutableCopy ¿ªÍ·¡£ÊµÏÖ·½Ê½Ò»°ãÊÇÔÚ·µ»ØÖ®Ç°¶ÔÆäµ÷ÓÃ autorelease ·½·¨£¬NSMutableArray µÄ array ·½·¨¾ÍÊÇÕâÑùÊµÏÖµÄ¡£
+è‹¥åœ¨æ–¹æ³•å†…åˆ›å»ºäº†å¯¹è±¡ï¼Œåˆ™è¯¥æ–¹æ³•æ‹¥æœ‰è¯¥å¯¹è±¡çš„æ‰€æœ‰æƒï¼›è‹¥è¯¥æ–¹æ³•æŠŠå®ƒæ‹¥æœ‰æ‰€æœ‰æƒçš„å¯¹è±¡è¿”å›ç»™è°ƒç”¨è€…ï¼Œåˆ™æ‰€æœ‰æƒå°±ä¼ é€’ç»™äº†è°ƒç”¨è€…ã€‚æŒ‰ç…§æƒ¯ä¾‹ï¼Œè¯¥æ–¹æ³•ååº”ä»¥ alloc å¼€å¤´ã€‚
+æ–¹æ³•ä¹Ÿå¯ä»¥è¿”å›æ²¡æœ‰æ‰€æœ‰æƒçš„å¯¹è±¡ï¼Œè¿™æ ·çš„æ–¹æ³•ä¸èƒ½ä»¥ alloc/new/copy/mutableCopy å¼€å¤´ã€‚å®ç°æ–¹å¼ä¸€èˆ¬æ˜¯åœ¨è¿”å›ä¹‹å‰å¯¹å…¶è°ƒç”¨ autorelease æ–¹æ³•ï¼ŒNSMutableArray çš„ array æ–¹æ³•å°±æ˜¯è¿™æ ·å®ç°çš„ã€‚
 Create and have ownership of it: +alloc/+new/-copy/-mutableCopy group
 Take ownership of it: -retain
 Relinquish it: -release
 Dispose of it: -dealloc
--copy ·½·¨´´½¨Ò»¸ö¶ÔÏóµÄ¸±±¾£¬¸ÃÀà±ØĞëÊµÏÖ <NSCopying> Ğ­Òé²¢ÊµÏÖ copyWithZone: ·½·¨¡£-mutableCopy ´´½¨Ò»¸ö mutable ¸±±¾£¬¸ÃÀà±ØĞëÊµÏÖ <NSMutableCopying> Ğ­Òé²¢ÊµÏÖ mutableCopyWithZone: ·½·¨¡£
-ÕâĞ©·½·¨²»ÊÇÓÉ Objective-C ÓïÑÔ±¾ÉíÌá¹©µÄ£¬¶øÊÇ Foundation Framework Ìá¹©µÄ¡£+alloc ÊÇ NSObject µÄÒ»¸öÀà·½·¨£¬-retain, -release, -dealloc ÊÇÆäÊµÀı·½·¨¡£
+-copy æ–¹æ³•åˆ›å»ºä¸€ä¸ªå¯¹è±¡çš„å‰¯æœ¬ï¼Œè¯¥ç±»å¿…é¡»å®ç° <NSCopying> åè®®å¹¶å®ç° copyWithZone: æ–¹æ³•ã€‚-mutableCopy åˆ›å»ºä¸€ä¸ª mutable å‰¯æœ¬ï¼Œè¯¥ç±»å¿…é¡»å®ç° <NSMutableCopying> åè®®å¹¶å®ç° mutableCopyWithZone: æ–¹æ³•ã€‚
+è¿™äº›æ–¹æ³•ä¸æ˜¯ç”± Objective-C è¯­è¨€æœ¬èº«æä¾›çš„ï¼Œè€Œæ˜¯ Foundation Framework æä¾›çš„ã€‚+alloc æ˜¯ NSObject çš„ä¸€ä¸ªç±»æ–¹æ³•ï¼Œ-retain, -release, -dealloc æ˜¯å…¶å®ä¾‹æ–¹æ³•ã€‚
 id obj = [[NSObject alloc] init];
 id obj = [NSobject new];  // same as above
 
@@ -45,3 +45,5 @@ inline NSUInteger NSExtraRefCount(id anObject)
     ++((struct obj_layout *)self)[-1].retained;
     return self;
 }
+
+
