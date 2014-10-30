@@ -1,16 +1,28 @@
-ÓĞÁ½¸ö°æ±¾µÄ Objective-C Runtime: modern (Objective-C 2.0) ºÍ legacy (Objective-C 1). ¶şÕßµÄ×î´ó²»Í¬ÊÇ£¬Ç°ÕßµÄÊµÀı±äÁ¿ÊÇ non-fragile µÄ£ºÔÚ legacy runtime ÖĞ£¬¸ü¸ÄÀàµÄÊµÀı±äÁ¿²¼¾Ö (layout) ºó£¬±ØĞëÖØĞÂ±àÒë¸ÃÀàµÄ×ÓÀà£¬¶øÔÚ modern runtime ÖĞÔò²»±ØÖØĞÂ±àÒë¡£´ËÍâ£¬the modern runtime supports instance variable synthesis for declared properties.
+ï»¿æœ‰ä¸¤ä¸ªç‰ˆæœ¬çš„ Objective-C Runtime: modern (Objective-C 2.0) å’Œ legacy (Objective-C 1). äºŒè€…çš„æœ€å¤§ä¸åŒæ˜¯ï¼Œå‰è€…çš„å®ä¾‹å˜é‡æ˜¯ non-fragile çš„ï¼šåœ¨ legacy runtime ä¸­ï¼Œæ›´æ”¹ç±»çš„å®ä¾‹å˜é‡å¸ƒå±€ (layout) åï¼Œå¿…é¡»é‡æ–°ç¼–è¯‘è¯¥ç±»çš„å­ç±»ï¼Œè€Œåœ¨ modern runtime ä¸­åˆ™ä¸å¿…é‡æ–°ç¼–è¯‘ã€‚æ­¤å¤–ï¼Œthe modern runtime supports instance variable synthesis for declared properties.
 
 Interacting with the Runtime
-Objective-C ³ÌĞòÔÚ 3 ¸ö²»Í¬µÄ levels ÉÏÓë runtime ÏµÍ³½»»¥£ºObjective-C Ô´´úÂë¡¢NSObject ¶¨ÒåµÄ·½·¨¡¢Ö±½Óµ÷ÓÃ runtime º¯Êı¡£
+Objective-C ç¨‹åºä»¥ 3 ä¸ªä¸åŒçš„ levels ä¸ runtime ç³»ç»Ÿäº¤äº’ï¼šObjective-C æºä»£ç ã€NSObject å®šä¹‰çš„æ–¹æ³•ã€ç›´æ¥è°ƒç”¨ runtime å‡½æ•°ã€‚
 
-Messaging
-±àÒëÆ÷°ÑÏûÏ¢±í´ïÊ½ [receiver message] ×ª»»³É objc_msgSend(receiver, selector, arg1, arg2, ...) º¯Êıµ÷ÓÃ¡£
-±àÒëÆ÷ÎªÃ¿¸öÀàºÍÊµÀı¶¼¹¹ÔìÁËÒ»¸ö class structure, ºóÕß°üº¬Á½¸öºËĞÄÔªËØ£º
-*) Ò»¸öÖ¸Ïò¸¸ÀàµÄÖ¸Õë self.superclass
+//////////////////// Messaging ////////////////////
+ç¼–è¯‘å™¨æŠŠæ¶ˆæ¯è¡¨è¾¾å¼ [receiver message] è½¬æ¢æˆ objc_msgSend(receiver, selector, arg1, arg2, ...) å‡½æ•°è°ƒç”¨ã€‚objc_msgSend() æ‰¾åˆ°æŸä¸ªæ–¹æ³• aMethod çš„å®ç°æ—¶ï¼Œè¿˜ä¼šå‘å…¶ä¼ é€’ä¸¤ä¸ªéšè—çš„å‚æ•°ï¼šæ¥æ”¶æ¶ˆæ¯çš„å¯¹è±¡ï¼Œä»¥åŠæ–¹æ³•çš„é€‰æ‹©ç¬¦ã€‚ä¹‹æ‰€ä»¥è¯´è¿™ä¸¤ä¸ªå‚æ•°æ˜¯â€œéšè—â€çš„ï¼Œæ˜¯å› ä¸ºå®šä¹‰ aMethod çš„æºä»£ç ä¸­æ²¡æœ‰å£°æ˜å®ƒä»¬ï¼Œå®ƒä»¬åªæ˜¯åœ¨ä»£ç è¢«ç¼–è¯‘æ—¶æ’å…¥åˆ°äº† aMethod çš„å®ç°ä¸­ã€‚ä»å¯å¼•ç”¨è¿™ä¸¤ä¸ªéšè—å‚æ•°ï¼šç”¨ self å¼•ç”¨æ¥æ”¶æ¶ˆæ¯çš„å¯¹è±¡ï¼Œç”¨ _cmd å¼•ç”¨æ–¹æ³•è‡ªå·±çš„é€‰æ‹©ç¬¦ã€‚åœ¨æ–¹æ³•çš„å®šä¹‰ä¸­ï¼Œå®é™…ä¸Šä¹Ÿæ˜¯é€šè¿‡è¿™ä¸ªéšè—çš„ self å‚æ•°è®¿é—®æ¥æ”¶æ¶ˆæ¯çš„å¯¹è±¡çš„å®ä¾‹å˜é‡çš„ã€‚
+ç¼–è¯‘å™¨ä¸ºæ¯ä¸ªç±»å’Œå®ä¾‹éƒ½æ„é€ äº†ä¸€ä¸ª class structure, åè€…åŒ…å«ä¸¤ä¸ªæ ¸å¿ƒå…ƒç´ ï¼š
+*) ä¸€ä¸ªæŒ‡å‘çˆ¶ç±»çš„æŒ‡é’ˆ self.superclass
 *) A class dispatch table. It has entries that associate method selectors with the class-specific addresses of the methods they identify. (The implementation address of a method selector.)
-¶ÔÏó±»´´½¨Ê±£¬Ëü»áµÃµ½ÄÚ´æ£¬ÆäÊµÀı±äÁ¿Ò²»á±»³õÊ¼»¯£¬ÆäÖĞ¾Í°üº¬Ò»¸öÖ¸ÏòÆä class structure µÄÖ¸Õë isa. Í¨¹ı¸ÃÖ¸Õë¿É·ÃÎÊ¸Ã¶ÔÏóËùÊôµÄÀà¡¢¼°Ëù¼Ì³ĞµÄÀà¡£
-ÏûÏ¢±»·¢ËÍ¸ø¶ÔÏóÊ±£¬objc_msgSend() º¯Êı»á¸úËæ¸Ã¶ÔÏóµÄ isa Ö¸Õëµ½´ïÆä class structure, ÔÚÆäÖĞµÄ dispatch table ÖĞ²éÕÒ method selector. ÈôÎ´ÕÒµ½£¬ÔòË³×Å self.superclass Ö¸ÕëÔÚ¸¸ÀàÖĞÕÒ£¬Ò»Ö±µ½ NSObject; ÈôÕÒµ½Ôòµ÷ÓÃ¡£¶¯Ì¬°ó¶¨¾ÍÊÇÕâÑùÊµÏÖµÄ¡£
-ÎªÁË¼ÓËÙÏûÏ¢µÄ´¦Àí£¬runtime system Ê¹ÓÃÁË cache »úÖÆ£¬»º´æ method selector µ½ method address. Ã¿¸öÀà¶¼ÓĞÒ»¸ö¶ÀÁ¢µÄ cache, ÆäÖĞ¼È¿É°üº¬±¾ÀàÖĞ¶¨ÒåµÄ·½·¨£¬Òà¿É°üº¬¸¸ÀàÖĞµÄ·½·¨¡£Cache ÊÇ¶¯Ì¬µ÷ÕûµÄ¡£
+å¯¹è±¡è¢«åˆ›å»ºæ—¶ï¼Œå®ƒä¼šå¾—åˆ°å†…å­˜ï¼Œå…¶å®ä¾‹å˜é‡ä¹Ÿä¼šè¢«åˆå§‹åŒ–ï¼Œå…¶ä¸­å°±åŒ…å«ä¸€ä¸ªæŒ‡å‘å…¶ class structure çš„æŒ‡é’ˆ isa. é€šè¿‡è¯¥æŒ‡é’ˆå¯è®¿é—®è¯¥å¯¹è±¡æ‰€å±çš„ç±»ã€åŠæ‰€ç»§æ‰¿çš„ç±»ã€‚
+æ¶ˆæ¯è¢«å‘é€ç»™å¯¹è±¡æ—¶ï¼Œobjc_msgSend() å‡½æ•°ä¼šè·Ÿéšè¯¥å¯¹è±¡çš„ isa æŒ‡é’ˆåˆ°è¾¾å…¶ class structure, åœ¨å…¶ä¸­çš„ dispatch table ä¸­æŸ¥æ‰¾æ–¹æ³•çš„é€‰æ‹©ç¬¦ã€‚è‹¥æœªæ‰¾åˆ°ï¼Œåˆ™é¡ºç€ self.superclass æŒ‡é’ˆåœ¨çˆ¶ç±»ä¸­æ‰¾ï¼Œä¸€ç›´åˆ° NSObject; è‹¥æ‰¾åˆ°åˆ™è°ƒç”¨ã€‚åŠ¨æ€ç»‘å®šå°±æ˜¯è¿™æ ·å®ç°çš„ã€‚
+ä¸ºäº†åŠ é€Ÿæ¶ˆæ¯çš„å¤„ç†ï¼Œruntime system ä½¿ç”¨äº† cache æœºåˆ¶ï¼Œç¼“å­˜æ–¹æ³•çš„é€‰æ‹©ç¬¦åˆ°æ–¹æ³•çš„åœ°å€ã€‚æ¯ä¸ªç±»éƒ½æœ‰ä¸€ä¸ªç‹¬ç«‹çš„ cache, å…¶ä¸­æ—¢å¯åŒ…å«æœ¬ç±»ä¸­å®šä¹‰çš„æ–¹æ³•ï¼Œäº¦å¯åŒ…å«çˆ¶ç±»ä¸­çš„æ–¹æ³•ã€‚Cache æ˜¯åŠ¨æ€è°ƒæ•´çš„ã€‚
+-------------- Get a Method Address
+å¯é€šè¿‡ NSObject ä¸­å®šä¹‰çš„ - (IMP)methodForSelector:(SEL)aSelector è·å¾—ä¸€ä¸ªæŒ‡å‘æŸæ–¹æ³• aMethod çš„æŒ‡é’ˆï¼ˆä¹Ÿå°±æ˜¯è¯¥æ–¹æ³•çš„åœ°å€ï¼‰ï¼Œå¹¶é€šè¿‡è¯¥æŒ‡é’ˆåƒå‡½æ•°ä¸€æ ·ç›´æ¥è°ƒç”¨ aMethod. æ³¨æ„å¿…é¡»å°å¿ƒåœ°æŠŠè¯¥æŒ‡é’ˆè½¬æ¢æˆé€‚å½“çš„å‡½æ•°ç±»å‹ï¼ˆå‡½æ•°æŒ‡é’ˆï¼‰ã€‚
+void (*setter)(id, SEL, BOOL) = (void (*)(id, SEL, BOOL))[target methodForSelector:@selector(setFilled:)];
+for (int i = 0; i < 1000; i++)
+    setter(targetList[i], @selector(setFilled:), YES);
+ä¸Šé¢å‰ä¸¤ä¸ªå‚æ•°åˆ†åˆ«æ˜¯æ¥æ”¶æ¶ˆæ¯çš„å¯¹è±¡ (self)ï¼Œä»¥åŠæ–¹æ³•çš„é€‰æ‹©ç¬¦ (_cmd). åœ¨ method è¯­æ³•ä¸­è¿™ä¸¤ä¸ªå‚æ•°æ˜¯éšè—çš„ï¼Œä½†ä»¥ function çš„å½¢å¼è°ƒç”¨ method æ—¶ï¼Œå°±å¿…é¡»æ˜¾å¼åœ°æä¾›ã€‚
+Comment: åŒä¸€ä¸ªæ–¹æ³•éœ€è¦é‡å¤è°ƒç”¨å¾ˆå¤šæ¬¡æ—¶ï¼Œä½¿ç”¨ - methodForSelector: å¯æå¤§åœ°å‡å° dynamic runtime system å‘é€æ¶ˆæ¯çš„å¼€é”€ï¼ˆå› ä¸ºä¸éœ€è¦æ¯æ¬¡éƒ½æŸ¥æ‰¾ dispatch table äº†ï¼‰ã€‚æ³¨æ„ - methodForSelector: ä¸æ˜¯ Objective-C è¯­è¨€çš„ç‰¹æ€§ï¼Œè€Œæ˜¯ç”± Cocoa runtime system æä¾›çš„ã€‚
+
+//////////////////// Dynamic Method Resolution ////////////////////
+åŠ¨æ€åœ°æä¾›æ–¹æ³•çš„å®ç°ã€‚å¦‚ declared property @dynamic propertyName å‘Šè¯‰ç¼–è¯‘å™¨ï¼Œè¯¥å±æ€§å…³è”çš„æ–¹æ³•å°†ä¼šåŠ¨æ€åœ°æä¾›ã€‚
+
+//////////////////// Message Forwarding ////////////////////
 
 
 Ref: Objective-C Runtime Programming Guide, Objective-C Runtime Reference.
