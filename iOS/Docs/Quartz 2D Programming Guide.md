@@ -186,7 +186,7 @@ Subpath 是由线条、弧和曲线构成的，Quartz 还提供了增加矩形�
 - CGContextAddArc
 - CGContextAddArcToPoint 尤适于创建矩形的圆角。
 
-![CGContextAddArcToPoint](http://developer.apple.com/library/ios/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/rounded_corner.gif)
+![CGContextAddArcToPoint](images/rounded_corner.gif)
 
 若当前路径已包含一个 subpath, 则 Quartz 附加一个从当前点到弧起点的直线段；若当前路径是空的，则 Quartz 在弧的起点处创建一个新 subpath 而不附加直线段。
 
@@ -275,13 +275,13 @@ Quartz 提供了对路径描边、填充、或二者兼具的函数。描边线�
 
 - Line width: CGContextSetLineWidth, 指线的总体宽度，以用户空间的单位度量。此线跨在路径上，两边各一半宽。
 - Line join: CGContextSetLineJoin, 指定怎样 draw 线段的交点。Quartz 支持以下线条交叉样式：
-	- Miter join [Default] ![Miter join](http://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/linejoinmiter.gif) 延伸两个线段描边的外边缘，直到它们以某个角度相交；若这个角度太锐，就会变成 bevel join. 判断太锐的标准是 (miter length / line width > miter limit) 成立。
-	- Round join ![Round join](http://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/linejoinround.gif) 在端点处绘一个直径等于线宽的半圆弧，所形成的封闭区域被填充。
-	- Bevel join ![Bevel join](http://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/linejoinbevel.gif) Quartz finishes the two segments with butt caps. The resulting notch beyond the ends of the segments is filled with a triangle.
+	- Miter join [Default] ![Miter join](images/linejoinmiter.gif) 延伸两个线段描边的外边缘，直到它们以某个角度相交；若这个角度太锐，就会变成 bevel join. 判断太锐的标准是 (miter length / line width > miter limit) 成立。
+	- Round join ![Round join](images/linejoinround.gif) 在端点处绘一个直径等于线宽的半圆弧，所形成的封闭区域被填充。
+	- Bevel join ![Bevel join](images/linejoinbevel.gif) Quartz finishes the two segments with butt caps. The resulting notch beyond the ends of the segments is filled with a triangle.
 - Line cap: CGContextSetLineCap, specifies the method used by CGContextStrokePath to draw the endpoint of the line. Quartz 支持以下 line cap 样式：
-	- Butt cap [Default] ![Butt cap](http://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/linecapbutt.gif) Quartz squares off the stroke at the endpoint of the path. There is no projection beyond the end of the path.
-	- Round cap ![Round cap](http://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/linecapround.gif) Quartz draws a circle with a diameter equal to the line width around the point where the two segments meet, producing a rounded corner. The enclosed area is filled in.
-	- Projecting square cap ![Projecting square cap](http://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/linecapsquare.gif) Quartz extends the stroke beyond the endpoint of the path for a distance equal to half the line width. The extension is squared off.	
+	- Butt cap [Default] ![Butt cap](images/linecapbutt.gif) Quartz squares off the stroke at the endpoint of the path. There is no projection beyond the end of the path.
+	- Round cap ![Round cap](images/linecapround.gif) Quartz draws a circle with a diameter equal to the line width around the point where the two segments meet, producing a rounded corner. The enclosed area is filled in.
+	- Projecting square cap ![Projecting square cap](images/linecapsquare.gif) Quartz extends the stroke beyond the endpoint of the path for a distance equal to half the line width. The extension is squared off.	
 	
 	A closed subpath treats the starting point as a junction between connected line segments; the starting point is rendered using the selected line-join method. In contrast, if you close the path by adding a line segment that connects to the starting point, both ends of the path are drawn using the selected line-cap method.
 - Miter limit: CGContextSetMiterLimit
@@ -388,7 +388,7 @@ You can use either set of functions without understanding anything about matrix 
 
 ## Modifying the CTM ##
 
-绘图前操纵 CTM 以旋转、缩放或平移 page, 这样会变换将要绘制的对象。变换 CTM 前照好保存 graphics state, 这样绘制完成后可将其恢复。也可把 CTM 与仿射变换拼接 (concatenate) 起来。
+绘图前操纵 CTM 以旋转、缩放或平移 page, 这样会变换将要绘制的对象。变换 CTM 前最好保存 graphics state, 这样绘制完成后可将其恢复。也可把 CTM 与仿射变换拼接 (concatenate) 起来。
 
 **执行多个变换时，不同的变换顺序可能导致不同的变换结果。**
 
@@ -400,7 +400,7 @@ You can use either set of functions without understanding anything about matrix 
 
     void CGContextRotateCTM(CGContextRef c, CGFloat angle);
 
-缩放 (scaling) 更改坐标空间的比例，这样就高效地拉伸或收缩了图像。若传入函数的 x 因子为负数，则可使坐标沿 x 轴翻转；类似地，若传入函数的 y 因子为负数，则可使坐标沿 y 轴翻转。
+缩放 (scaling) 更改坐标空间的比例，这样就高效地拉伸或收缩了图像。若传入函数的 x 因子为负数，则可使坐标沿 x 轴翻转；类似地，若传入函数的 y 因子为负数，则可使坐标沿 y 轴翻转。（即负数导致坐标轴正方向反转）
 
     void CGContextScaleCTM(CGContextRef c, CGFloat factorX, CGFloat factorY);
 
