@@ -18,6 +18,8 @@ You should read this document to gain an understanding of how the Objective-C ru
 
 Objective-C Runtime Reference
 
+[Objective-C Runtime Source Code](http://www.opensource.apple.com/source/objc4/ "Source Browser")
+
 #Runtime Versions and Platforms
 
 There are different versions of the Objective-C runtime on different platforms.
@@ -39,7 +41,7 @@ In addition, the modern runtime supports instance variable synthesis for declare
 
 iOS 上的程序和 OS X 10.5 及以后的 64 位程序使用 modern runtime.
 
-#Interacting with the Runtime#
+#Interacting with the Runtime
 
 Objective-C programs interact with the runtime system at three distinct levels: through Objective-C source code; through methods defined in the NSObject class of the Foundation framework; and through direct calls to runtime functions.
 
@@ -53,17 +55,13 @@ When you compile code containing Objective-C classes and methods, the compiler c
 
 多数情况下，runtime system 在幕后自动发挥作用。编写 Objective-C 代码时，就在使用它了。
 
-编译含有 Objective-C 类和方法的代码时，编译器会创建实现 Objective-C 动态特性的数据结构和函数调用。这些数据结构的信息来自 class 和 category 定义、以及 protocol 声明，包含 class 和 protocol 对象，以及 method selector, 实例变量模板，以及从源代码中提取的其他信息。发送消息的那个函数 (`objc_msgSend()`) 是 runtime 里主要的函数，它由源代码中的消息表达式调用。
+编译含有 Objective-C 类和方法的代码时，编译器会创建实现 Objective-C 动态特性的数据结构和函数调用。这些数据结构的信息来自 class 和 category 定义、以及 protocol 声明，包含 class 和 protocol 对象，以及 method selector, 实例变量模板，还有从源代码中提取的其他信息。发送消息的那个函数 (`objc_msgSend()`) 是 runtime 里主要的函数，它由源代码中的消息表达式调用。
 
 ##NSObject Methods
 
 Most objects in Cocoa are subclasses of the NSObject class, so most objects inherit the methods it defines. (The notable exception is the NSProxy class; see Message Forwarding for more information.) Its methods therefore establish behaviors that are inherent to every instance and every class object. However, in a few cases, the NSObject class merely defines a template for how something should be done; it doesn’t provide all the necessary code itself.
 
-Cocoa 中的多数对象都是 NSObject 的子类，自然也就继承了其方法（一个例外是 `NSProxy`）。不过对少数几个方法，NSObject 只是定义了一个模板，说明该做哪些事，而未提供所有需要的代码。
-
 For example, the NSObject class defines a description instance method that returns a string describing the contents of the class. This is primarily used for debugging—the GDB print-object command prints the string returned from this method. NSObject’s implementation of this method doesn’t know what the class contains, so it returns a string with the name and address of the object. Subclasses of NSObject can implement this method to return more details. For example, the Foundation class NSArray returns a list of descriptions of the objects it contains.
-
-例如，NSObject 类定义了一个 description 实例方法，返回一个描述类的内容的字符串。该方法主要用于调试，GDB `print-object` 命令打印的就是这个方法的返回值。NSObject 类对该方法的实现不知道某个子类具体包含什么，故返回的字符串包含了对象的名字和地址。子类可以实现该方法以返回更多的细节，如 NSArray 返回它包含的对象列表。
 
 Some of the NSObject methods simply query the runtime system for information. These methods allow objects to perform introspection. Examples of such methods are:
 
@@ -72,6 +70,10 @@ Some of the NSObject methods simply query the runtime system for information. Th
 - respondsToSelector:, which indicates whether an object can accept a particular message; 
 - conformsToProtocol:, which indicates whether an object claims to implement the methods defined in a specific protocol;
 - methodForSelector:, which provides the address of a method’s implementation. 
+
+Cocoa 中的多数对象都是 NSObject 的子类，自然也就继承了其方法（一个例外是 `NSProxy`）。不过对少数几个方法，NSObject 只是定义了一个模板，说明该做哪些事，而未提供所有需要的代码。
+
+例如，NSObject 类定义了一个 description 实例方法，返回一个描述类的内容的字符串。该方法主要用于调试，GDB `print-object` 命令打印的就是这个方法的返回值。NSObject 类对该方法的实现不知道某个子类具体包含什么，故返回的字符串包含了对象的名字和地址。子类可以实现该方法以返回更多的细节，如 NSArray 返回它包含的对象列表。
 
 NSObject 的有些方法只是向 runtime system 查询一些信息，这些方法允许对象执行 introspection. e.g.:
 
@@ -120,7 +122,7 @@ Note: While not strictly a part of the language, the isa pointer is required for
 
 在 Objective-C 中，直到运行时消息才会被绑定到方法的实现。编译器把消息表达式 `[receiver message]` 转换为对消息函数 `objc_msgSend()` 的调用。该函数把消息的接收者和消息中提到的方法名——即 method selector ——作为其两个主要参数 `objc_msgSend(receiver, selector)`. 
 
-此外，消息中的其他参数也会处理 `objc_msgSend(receiver, selector, arg1, arg2, ...)`.
+消息中若有其他参数，则亦会被传递 `objc_msgSend(receiver, selector, arg1, arg2, ...)`.
 
 消息函数为动态绑定做了一切必要的工作：
 
@@ -147,9 +149,11 @@ When a message is sent to an object, the messaging function follows the object�
 
 This is the way that method implementations are chosen at runtime—or, in the jargon of object-oriented programming, that methods are dynamically bound to messages.
 
-消息被发送给对象时，消息函数 objc_msgSend 根据对象的 isa 指针到达 class 结构体，在此处的 dispatch table 中查找 method selector. 若未找到，则跟随指向父类的指针（译注：即 self.superclass）到达父类，并在那里的 dispatch table 中查找……如此直到 NSObject 类。找到这个 method selector 后，objc_msgSend 调用 distable table 中所指明的方法，并把接收对象的数据结构传递进去。这就是运行时选择方法实现的方式，用 OOP 的术语说就是，方法是被动态绑定到消息的。
-
 To speed the messaging process, the runtime system caches the selectors and addresses of methods as they are used. There’s a separate cache for each class, and it can contain selectors for inherited methods as well as for methods defined in the class. Before searching the dispatch tables, the messaging routine first checks the cache of the receiving object’s class (on the theory that a method that was used once may likely be used again). If the method selector is in the cache, messaging is only slightly slower than a function call. Once a program has been running long enough to “warm up” its caches, almost all the messages it sends find a cached method. Caches grow dynamically to accommodate new messages as the program runs.
+
+消息被发送给对象时，消息函数 `objc_msgSend` 根据对象的 `isa` 指针到达 class 结构体，在此处的 dispatch table 中查找 method selector. 若未找到，则跟随指向父类的指针（译注：即 `self.superclass`）到达父类，并在那里的 dispatch table 中查找……如此直到 NSObject 类。一旦找到这个 method selector, `objc_msgSend` 就调用 dispatch table 中所指明的方法，并把接收对象的数据结构传递进去。
+
+这就是运行时选择方法实现的方式，用 OOP 的术语说就是，方法是被动态绑定到消息的。
 
 为加速消息处理，runtime system 会在 selector 和方法的地址被用过后，将其缓存下来。每个类都有一个独立的缓存，其中可包含继承来的方法，也可包含本类自己定义的方法。搜索 distaptch table 前，消息函数首先会检查（消息接收对象所属的类的）这个缓存（基于局部性原理）。如果 cahce 命中，那么发消息就仅比函数调用略慢。一旦程序运行的时间够长，使 cache 动态增长以容纳新的消息，则 cache 的命中率就会很高。
 
@@ -177,11 +181,25 @@ Although these arguments aren’t explicitly declared, source code can still ref
 
 `self` is the more useful of the two arguments. It is, in fact, the way the receiving object’s instance variables are made available to the method definition.
 
-objc_msgSend() 找到实现了某个方法 aMethod 的 procedure 时，会调用之、并向其传递所有的参数，其中还包括两个隐藏参数：接收消息的对象，以及方法的选择符。这些参数使方法的实现得以知晓关于消息表达式中两者的显式信息。之所以说这两个参数是“隐藏”的，是因为定义 aMethod 的源代码中没有声明它们，它们只是在代码被编译时插入到了 aMethod 的实现中。
+设实现 aMethod 方法的是 aProcedure 例程。`objc_msgSend()` 找到 aProcedure 后，会调用之、并向其传递所有的参数，其中还包括两个隐藏参数：接收消息的对象，以及方法选择符。之所以说这两个参数是“隐藏”的，是因为定义 aMethod 的源代码中没有声明它们，它们只是在代码被编译时插入到了 aProcedure 中。
 
-尽管这两个参数未显式声明，仍可在源代码中引用它们，就像可以引用接收对象的实例变量一样。用 `self` 引用接收消息的对象，用 `_cmd` 引用方法自己的选择符。
+尽管这两个参数未显式声明，仍可在源代码中引用它们，就像可以引用接收对象的实例变量一样：
 
-`self` 参数更有用些，在方法的定义中，实际上也是通过 `self` 访问接收对象的实例变量的。
+- 用 `self` 引用接收消息的对象。这个参数更有用些，在方法的定义中，实际上也是通过它来访问接收对象的实例变量的。
+- 用 `_cmd` 引用方法自己的选择符。
+
+`objc_msgSend()` 向 aProcedure 所传递的这些参数，使 aProcedure 得以知晓调用它的那个消息表达式中，两半部分的有关信息：
+
+- 两个隐藏参数：对 caller 来说分别是 receiver 和 message (selector), 对 callee 来说分别是 self 和 _cmd.
+- 其他显式参数。
+
+```
+[receiver message];  -- compile --> objc_msgSend(receiver, selector, args...)
+{
+    // find the implementation...
+    return Class_selector();
+}
+```
 
 ##Getting a Method Address
 
@@ -189,7 +207,7 @@ The only way to circumvent dynamic binding is to get the address of a method and
 
 With a method defined in the `NSObject` class, `methodForSelector:`, you can ask for a pointer to the procedure that implements a method, then use the pointer to call the procedure. The pointer that methodForSelector: returns must be carefully cast to the proper function type. Both return and argument types should be included in the cast.
 
-绕过动态绑定的唯一方法是获得方法（的实现）的地址，然后像函数一样直接调用之。需要连续多次调用某个方法时，若欲避免发消息的开销，则可以这样做（不用查找 cache / dispatch table 了）。
+绕过动态绑定的唯一方法是获得方法（的实现）的地址，然后像函数一样直接调用之。需要连续多次调用某个方法时，若欲避免发送消息的开销，则可以这样做（不用查找 cache / dispatch table 了）。
 
 通过 `NSObject` 定义的 `methodForSelector:` 方法可获得一个指针，指向实现某个方法的 procedure, 然后使用这个指针调用这个 procedure. 注意小心地把 `methodForSelector:` 的返回值转换为正确的函数（函数指针）类型，包括返回类型和参数类型。
 
